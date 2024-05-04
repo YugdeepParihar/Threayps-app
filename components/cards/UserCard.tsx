@@ -36,7 +36,7 @@ function UserCard({ id, name, username, imgUrl, personType }: Props) {
         </div>
       </div>
 
-      <Button variant="pink"
+      <Button 
         className='user-card_btn'
         onClick={() => {
           if (isCommunity) {
