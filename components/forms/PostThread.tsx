@@ -6,6 +6,8 @@ import { useOrganization } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { usePathname, useRouter } from "next/navigation";
 
+
+
 import {
   Form,
   FormControl,
@@ -38,14 +40,72 @@ function PostThread({ userId }: Props) {
     },
   });
 
+  const bannedWords = [
+    "racist",
+    "sex",
+    "body shaming",
+    "homophobic",
+    "slut",
+    "terrorist",
+    "rape",
+    "cunt",
+    "faggot",
+    "bitch",
+    "whore",
+    "pedophile",
+    "Nazi",
+    "retard",
+    "fatso",
+    "tranny",
+    "illegal",
+    "ISIS",
+    "molest",
+    "suicide",
+    "Hitler",
+    "KKK",
+    "incest",
+    "abuse",
+    "anorexic",
+    "jihad",
+    "genocide",
+    "drug dealer",
+    "cartel",
+    "witch",
+    "Satan",
+    "necrophilia",
+    "hentai",
+    "bestiality",
+    "necrophilia",
+    "incest",
+    "cannibal",
+    // Add more banned words as needed
+  ];
+  
+   const containsBannedWord = (text: string): boolean => {
+    const lowerCaseText = text.toLowerCase();
+    return bannedWords.some(word =>
+      lowerCaseText.includes(word.toLowerCase())
+    );
+  };
+  
   const onSubmit = async (values: z.infer<typeof ThreadValidation>) => {
+    if (containsBannedWord(values.thread)) {
+      // Show a warning message
+      alert("Illegal content detected. Your post contains banned words.");
+      
+      // Redirect to the homepage
+      router.push("/");
+      return;
+    }
+  
+    // If no banned words are found, proceed with creating the thread
     await createThread({
       text: values.thread,
       author: userId,
       communityId: organization ? organization.id : null,
       path: pathname,
     });
-
+  
     router.push("/");
   };
 
